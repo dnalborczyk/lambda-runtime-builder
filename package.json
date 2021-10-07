@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/dnalborczyk/lambda-runtime-builder/issues"
   },
-  "homepage": "https://github.com/dnalborczyk/lambda-runtime-builder#readme"
+  "homepage": "https://github.com/dnalborczyk/lambda-runtime-builder#readme",
+  "devDependencies": {
+    "prettier": "^2.4.1"
+  }
 }
