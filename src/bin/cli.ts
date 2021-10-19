@@ -15,8 +15,8 @@ const cli = meow(
     $ lambda-runtime-builder <input>
 
   Options
-    --cpu-architecture  -arch  possible values: arm64 | x86_64    default: x86_64
-    --node-version      -nv    version of node.js, e.g. 16.10.0   default: 16.10.0 (soon: latest-lts)
+    --cpu-architecture  -a     possible values: arm64 | x86_64    default: x86_64
+    --node-version      -n     version of node.js, e.g. 16.10.0   default: 16.10.0 (soon: latest-lts)
     --overwrite         -o     overwrite existing file            default: false
     --runtime-filename         file name of zipped runtime        default: ./package/custom-node-runtime-v{node-version}.zip
     --runtime-path             path to zipped runtime             default: ./package/custom-node-runtime-v{node-version}.zip
@@ -26,14 +26,14 @@ const cli = meow(
 `,
   {
     flags: {
-      architecture: {
-        alias: 'arch',
+      cpuArchitecture: {
+        alias: 'a',
         default: 'x86_64',
         type: 'string',
       },
 
       nodeVersion: {
-        alias: 'nv',
+        alias: 'n',
         default: '16.10.0', // TODO temp, support: latest, latest-lts
         type: 'string',
       },
@@ -60,17 +60,22 @@ const cli = meow(
   },
 )
 
-const { architecture, nodeVersion, overwrite, runtimeFilename, runtimePath } =
-  cli.flags
+const {
+  cpuArchitecture,
+  nodeVersion,
+  overwrite,
+  runtimeFilename,
+  runtimePath,
+} = cli.flags
 
 const options: Options = {
-  architecture: architecture === 'arm64' ? 'arm64' : 'x64',
+  cpuArchitecture: cpuArchitecture === 'arm64' ? 'arm64' : 'x64',
   nodeVersion,
   operatingSystem: 'linux', // for now the only one supported
   overwrite,
   runtimeFilename:
     runtimeFilename === './node-runtime'
-      ? `${runtimeFilename}-v${nodeVersion}.zip`
+      ? `${runtimeFilename}-v${nodeVersion}-${cpuArchitecture}.zip`
       : 'node-runtime',
   runtimePath,
 }
