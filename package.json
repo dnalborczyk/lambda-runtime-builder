@@ -12,8 +12,8 @@
     "build": "rimraf dist && tsc",
     "lint": "eslint .",
     "prepare": "npm run build",
+    "start": "node --loader ts-node/esm src/bin/index.ts",
     "start:build": "node dist/bin/cli.js",
-    "start:cli-menu": "node --loader ts-node/esm src/cli-menu/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
