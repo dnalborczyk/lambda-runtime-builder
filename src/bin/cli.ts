@@ -2,6 +2,7 @@
 
 import meow from 'meow'
 import createPackage, { Options } from '../createPackage.js'
+import cliMenu from '../cli-menu/index.js'
 
 // --latest               show latest version of node.js
 // --latest-lts           show latest LTS version of node.js
@@ -16,6 +17,7 @@ const cli = meow(
 
   Options
     --cpu-architecture  -a     possible values: arm64 | x86_64    default: x86_64
+    --interactive       -i     interactive menu, ignores all other flags
     --node-version      -n     version of node.js, e.g. 16.10.0   default: 16.10.0 (soon: latest-lts)
     --overwrite         -o     overwrite existing file            default: false
     --runtime-filename         file name of zipped runtime        default: ./package/custom-node-runtime-v{node-version}.zip
@@ -32,9 +34,15 @@ const cli = meow(
         type: 'string',
       },
 
+      interactive: {
+        alias: 'i',
+        default: false,
+        type: 'boolean',
+      },
+
       nodeVersion: {
         alias: 'n',
-        default: '16.10.0', // TODO temp, support: latest, latest-lts
+        // default: '17.0.0', // TODO temp, support: latest, latest-lts
         type: 'string',
       },
 
@@ -62,22 +70,27 @@ const cli = meow(
 
 const {
   cpuArchitecture,
+  interactive,
   nodeVersion,
   overwrite,
   runtimeFilename,
   runtimePath,
 } = cli.flags
 
-const options: Options = {
-  cpuArchitecture: cpuArchitecture === 'arm64' ? 'arm64' : 'x64',
-  nodeVersion,
-  operatingSystem: 'linux', // for now the only one supported
-  overwrite,
-  runtimeFilename:
-    runtimeFilename === './node-runtime'
-      ? `${runtimeFilename}-v${nodeVersion}-${cpuArchitecture}.zip`
-      : 'node-runtime',
-  runtimePath,
-}
+if (interactive || nodeVersion == null) {
+  cliMenu()
+} else {
+  const options: Options = {
+    cpuArchitecture: cpuArchitecture === 'arm64' ? 'arm64' : 'x64',
+    nodeVersion,
+    operatingSystem: 'linux', // for now the only one supported
+    overwrite,
+    runtimeFilename:
+      runtimeFilename === './node-runtime'
+        ? `${runtimeFilename}-v${nodeVersion}-${cpuArchitecture}.zip`
+        : 'node-runtime',
+    runtimePath,
+  }
 
-createPackage(options)
+  createPackage(options)
+}
