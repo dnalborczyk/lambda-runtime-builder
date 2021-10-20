@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "lint": "eslint .",
     "prepare": "npm run build",
     "start:cli-menu": "node --loader ts-node/esm src/cli-menu/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,18 +26,6 @@
     "url": "https://github.com/dnalborczyk/lambda-runtime-builder/issues"
   },
   "homepage": "https://github.com/dnalborczyk/lambda-runtime-builder#readme",
-  "devDependencies": {
-    "@types/archiver": "5.1.1",
-    "@types/fs-extra": "9.0.13",
-    "@types/node": "16.11.1",
-    "@types/node-fetch": "2.5.12",
-    "@types/react": "17.0.30",
-    "@types/semver": "7.3.9",
-    "@types/tar": "4.0.5",
-    "prettier": "2.4.1",
-    "ts-node": "10.3.0",
-    "typescript": "4.4.4"
-  },
   "dependencies": {
     "archiver": "5.3.0",
     "aws-lambda-ric": "file:../../github-forks/aws-lambda-nodejs-runtime-interface-client",
@@ -49,5 +38,23 @@
     "react": "16.14.0",
     "semver": "7.3.5",
     "tar": "6.1.11"
+  },
+  "devDependencies": {
+    "@types/archiver": "5.1.1",
+    "@types/fs-extra": "9.0.13",
+    "@types/node": "16.11.1",
+    "@types/node-fetch": "2.5.12",
+    "@types/react": "17.0.30",
+    "@types/semver": "7.3.9",
+    "@types/tar": "4.0.5",
+    "@typescript-eslint/eslint-plugin": "4.33.0",
+    "@typescript-eslint/parser": "4.33.0",
+    "eslint": "7.32.0",
+    "eslint-config-airbnb-typescript": "14.0.1",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "prettier": "2.4.1",
+    "ts-node": "10.3.0",
+    "typescript": "4.4.4"
   }
 }

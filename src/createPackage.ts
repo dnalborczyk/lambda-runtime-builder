@@ -120,9 +120,9 @@ export default async function createPackage(
   response.body.pipe(tarExtract)
 
   // TODO reject, error handling, temp, cli only
-  return new Promise((resolve /* reject */) => {
+  return new Promise((res /* rej */) => {
     archive.on('end', () => {
-      resolve(true)
+      res(true)
       console.log(`Done! File created at ${filePath}`)
     })
   })

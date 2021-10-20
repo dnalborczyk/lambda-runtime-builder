@@ -1,4 +1,3 @@
-import { exit } from 'node:process'
 import fetch, { Response } from 'node-fetch'
 
 const NODE_BUILD_URL = 'https://nodejs.org'
@@ -17,6 +16,6 @@ export default async function downloadFile(
     return await fetch(String(url))
   } catch (err) {
     console.error(`ERROR ${err.message}`)
-    exit(1) // TODO temp, cli only
+    throw new Error('Could not download the node.js build.')
   }
 }
