@@ -14,7 +14,7 @@ import downloadFile from './downloadFile.js'
 const bootstrapDir = join(
   dirname(fileURLToPath(import.meta.url)),
   '..', // temp
-  'src',
+  // 'src',
 )
 
 const ricDir = join(
