@@ -1,0 +1,4 @@
+#!/bin/sh
+set -euo pipefail
+
+/opt/bin/node --expose-gc /opt/bootstrap.js

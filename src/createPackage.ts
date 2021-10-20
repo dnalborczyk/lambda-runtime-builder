@@ -1,35 +1,33 @@
 import type { Buffer } from 'node:buffer'
 import { createWriteStream } from 'node:fs'
-import { resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { exit } from 'node:process'
 import type { Readable } from 'node:stream'
+import { fileURLToPath } from 'node:url'
 import archiver from 'archiver'
-import { ensureDir, pathExists } from 'fs-extra'
-import fetch, { Response } from 'node-fetch'
 import { Parse } from 'tar'
+import checkDir from './checkDir.js'
+import checkFile from './checkFile.js'
+import downloadFile from './downloadFile.js'
 
-const NODE_BUILD_URL = 'https://nodejs.org'
+// temp
+const bootstrapDir = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..', // temp
+  'src',
+)
 
-async function checkDir(path: string): Promise<void> {
-  try {
-    await ensureDir(path)
-  } catch (err) {
-    console.error(`ERROR: ${err.message}`)
-    exit(1) // TODO temp, cli only
-  }
-}
+const ricDir = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..', // temp
+  'node_modules',
+  'aws-lambda-ric',
+)
 
-async function checkFile(path: string): Promise<boolean> {
-  try {
-    return await pathExists(path)
-  } catch (err) {
-    console.error(`ERROR: ${err.message}`)
-    exit(1) // TODO temp, cli only
-  }
-}
+// console.log(bootstrapDir)
 
 export interface Options {
-  architecture: 'arm64' | 'x64'
+  cpuArchitecture: 'arm64' | 'x64'
   nodeVersion: string
   operatingSystem: 'linux'
   overwrite: boolean
@@ -41,7 +39,7 @@ export default async function createPackage(
   options: Options,
 ): Promise<boolean> {
   const {
-    architecture,
+    cpuArchitecture,
     nodeVersion,
     operatingSystem,
     overwrite,
@@ -60,22 +58,9 @@ export default async function createPackage(
     exit(1) // TODO temp, cli only
   }
 
-  const tarArchive = `node-v${nodeVersion}-${operatingSystem}-${architecture}`
+  const tarArchive = `node-v${nodeVersion}-${operatingSystem}-${cpuArchitecture}`
 
-  const url = new URL(
-    `dist/v${nodeVersion}/${tarArchive}.tar.gz`,
-    NODE_BUILD_URL,
-  )
-  console.log(String(url))
-
-  let response: Response
-
-  try {
-    response = await fetch(String(url))
-  } catch (err) {
-    console.error(`ERROR ${err.message}`)
-    exit(1) // TODO temp, cli only
-  }
+  const response = await downloadFile(nodeVersion, tarArchive)
 
   const output = createWriteStream(filePath)
 
@@ -102,14 +87,18 @@ export default async function createPackage(
     },
 
     onentry(entry: string | Readable | Buffer) {
-      archive.append(entry, { name: 'bin/node', mode: 0o755 }) // file bug in tar?
-      // archive.file('bootstrap', { name: 'bootstrap' })
-      // archive.file('bootstrap.js', { name: 'bootstrap.js' })
-      // archive.file('package.json', { name: 'package.json' })
-      // archive.file('ric.js', { name: 'ric.js' })
-      // archive.file('ric.js.map', { name: 'ric.js.map' })
-
-      archive.pipe(output)
+      archive
+        .append(entry, { name: 'bin/node', mode: 0o755 }) // file bug in tar?
+        .file(join(bootstrapDir, 'bootstrap/bootstrap'), {
+          name: 'bootstrap',
+        })
+        .file(join(bootstrapDir, 'bootstrap/bootstrap.js'), {
+          name: 'bootstrap.js',
+        })
+        .file(join(ricDir, 'package.json'), { name: 'package.json' })
+        .file(join(ricDir, 'dist/index.js'), { name: 'ric.js' })
+        .file(join(ricDir, 'dist/index.js.map'), { name: 'ric.js.map' })
+        .pipe(output)
 
       archive.finalize()
     },
