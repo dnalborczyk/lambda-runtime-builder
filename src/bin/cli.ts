@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import meow from 'meow'
-import createPackage, { Options } from '../createPackage.js'
+import createPackage, { Options } from '../index.js'
 import cliMenu from '../cli-menu/index.js'
 
 // --latest               show latest version of node.js
