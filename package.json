@@ -12,6 +12,8 @@
     "build": "rimraf dist && tsc",
     "lint": "eslint .",
     "prepare": "npm run build",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "start": "node --loader ts-node/esm src/bin/index.ts",
     "start:build": "node dist/bin/cli.js",
     "test": "echo \"Error: no test specified\" && exit 1"
