@@ -86,6 +86,7 @@ export default async function createPackage(
       return path === `${tarArchive}/bin/node`
     },
 
+    // @ts-ignore TODO FIXME
     onentry(entry: string | Readable | Buffer) {
       archive
         .append(entry, { name: 'bin/node', mode: 0o755 }) // file bug in tar?
@@ -107,6 +108,7 @@ export default async function createPackage(
     // C: "bin", // alias for cwd:'some-dir', also ok
   })
 
+  // @ts-ignore TODO FIXME
   tarExtract.on('error', (err: any) => {
     console.log(`ERROR: ${err.message}`)
     exit(1) // TODO temp, cli only

@@ -21,5 +21,6 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'import/extensions': 'off',
     'no-console': 'off',
+    'no-restricted-exports': 'off',
   },
 }
